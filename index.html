@@ -23,6 +23,7 @@
         :root {
             --color-background: #05070D;
             --color-surface: #10141F;
+            --color-surface-hover: #191F2D; /* New color for hover state */
             --color-text: #C5C8D2;
             --color-heading: #FFFFFF;
             --color-primary: #38BDF8; /* Lighter Sky Blue */
@@ -180,8 +181,8 @@
         /* 4. Features Section
         ------------------------------------- */
         .features {
+            /* FIX: Removed background gradient that was covering the 3D canvas */
             border-top: 1px solid rgba(255, 255, 255, 0.1);
-            background: linear-gradient(to bottom, transparent, rgba(5, 7, 13, 1) 10%);
         }
 
         .section-title {
@@ -205,16 +206,17 @@
             padding: 2rem;
             border-radius: 10px;
             border: 1px solid rgba(255, 255, 255, 0.1);
-            /* Updated transition to include border-color */
-            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+            /* FIX: Added background-color to the transition for a smoother effect */
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease, background-color 0.4s ease;
             position: relative;
         }
 
-        /* Updated hover effect for a more noticeable animation */
+        /* FIX: Revamped hover effect for a more noticeable animation */
         .feature-card:hover {
-            transform: translateY(-8px); /* Increased lift */
-            border-color: rgba(56, 189, 248, 0.8); /* Make border glow */
-            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); /* Add a soft glow around the card */
+            transform: translateY(-10px); /* Increased lift */
+            background-color: var(--color-surface-hover); /* Change background on hover */
+            border-color: var(--color-primary); /* Make border glow */
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3); /* Add a more prominent shadow */
         }
         
         .feature-card h3 {
@@ -380,7 +382,7 @@
             // Handle window resize
             window.addEventListener('resize', () => {
                 sizes.width = window.innerWidth;
-                height: window.innerHeight;
+                sizes.height = window.innerHeight;
                 camera.aspect = sizes.width / sizes.height;
                 camera.updateProjectionMatrix();
                 renderer.setSize(sizes.width, sizes.height);
