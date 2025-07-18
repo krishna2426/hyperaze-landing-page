@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hyperaze - AI-Powered License Automation</title>
+
+    <!-- Google Fonts: Inter & Space Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+    <style>
+        /* ---
+        CUSTOM STYLES - NO UTILITY CLASSES
+        --- */
+
+        /* 1. Design Tokens & Base Styles
+        ------------------------------------- */
+        :root {
+            --color-background: #05070D;
+            --color-surface: #10141F;
+            --color-text: #C5C8D2;
+            --color-heading: #FFFFFF;
+            --color-primary: #38BDF8; /* Lighter Sky Blue */
+            --color-secondary: #A78BFA; /* Softer Violet */
+            --font-body: 'Inter', sans-serif;
+            --font-mono: 'Space Mono', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--color-background);
+            color: var(--color-text);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Three.js Canvas */
+        .webgl {
+            position: fixed;
+            top: 0;
+            left: 0;
+            outline: none;
+            z-index: -1;
+        }
+
+
+        /* Container & Typography */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 80px 0;
+        }
+
+        h1, h2, h3 {
+            font-family: var(--font-mono);
+            color: var(--color-heading);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: clamp(2.5rem, 5vw, 4rem); }
+        h2 { font-size: clamp(2rem, 4vw, 2.5rem); }
+        p { margin-bottom: 1rem; max-width: 65ch; }
+        a { color: var(--color-primary); text-decoration: none; }
+
+        /* 2. Header & Navigation
+        ------------------------------------- */
+        .main-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem 5%;
+            z-index: 10;
+        }
+
+        .main-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: var(--font-mono);
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-heading);
+        }
+
+        .logo span {
+            color: var(--color-primary);
+            text-shadow: 0 0 4px rgba(56, 189, 248, 0.5);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--color-text);
+            transition: color 0.3s, text-shadow 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--color-heading);
+            text-shadow: 0 0 2px var(--color-primary);
+        }
+
+        /* 3. Hero Section
+        ------------------------------------- */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero h1 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .hero .highlight {
+            color: var(--color-primary);
+            text-shadow: 0 0 10px rgba(56, 189, 248, 0.5);
+        }
+
+        .hero p {
+            font-size: 1.1rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .cta-button {
+            font-family: var(--font-mono);
+            font-size: 1rem;
+            font-weight: 700;
+            color: #05070D;
+            background-color: var(--color-primary);
+            padding: 1rem 2.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 0 8px rgba(56, 189, 248, 0.4);
+            animation: pulse 2.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 8px rgba(56, 189, 248, 0.4); }
+            50% { box-shadow: 0 0 16px rgba(56, 189, 248, 0.5); }
+            100% { box-shadow: 0 0 8px rgba(56, 189, 248, 0.4); }
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            animation-play-state: paused;
+        }
+
+        /* 4. Features Section
+        ------------------------------------- */
+        .features {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            background: linear-gradient(to bottom, transparent, rgba(5, 7, 13, 1) 10%);
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+        
+        .section-title p {
+            margin: 0.5rem auto 0;
+            color: var(--color-primary);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background-color: var(--color-surface);
+            padding: 2rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* Updated transition to include border-color */
+            transition: transform 0.4s ease, box-shadow 0.4s ease, border-color 0.4s ease;
+            position: relative;
+        }
+
+        /* Updated hover effect for a more noticeable animation */
+        .feature-card:hover {
+            transform: translateY(-8px); /* Increased lift */
+            border-color: rgba(56, 189, 248, 0.8); /* Make border glow */
+            box-shadow: 0 0 25px rgba(56, 189, 248, 0.2); /* Add a soft glow around the card */
+        }
+        
+        .feature-card h3 {
+            color: var(--color-primary);
+            margin-bottom: 1rem;
+        }
+        
+        .feature-card h3.secondary {
+            color: var(--color-secondary);
+        }
+
+        /* 5. Scroll Animations
+        ------------------------------------- */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 6. Responsive Design
+        ------------------------------------- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            .hero {
+                text-align: center;
+            }
+            .hero p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    
+    <canvas class="webgl"></canvas>
+
+    <header class="main-header">
+        <nav class="main-nav">
+            <a href="#" class="logo">Hyper<span>aze</span></a>
+            <div class="nav-links">
+                <a href="#features">Features</a>
+                <a href="#">Pricing</a>
+                <a href="#">Docs</a>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content fade-in">
+                    <h1>Automate License Keys.<br>Unlock <span class="highlight">AI Insights.</span></h1>
+                    <p>Hyperaze is the ultimate platform for developers and creators to automate license key generation, delivery, and management, while gaining powerful insights from their communities.</p>
+                    <button class="cta-button">Get Started - It's Free</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="features">
+            <div class="container">
+                <div class="section-title fade-in">
+                    <h2>The Next Generation Toolkit</h2>
+                    <p>Built for modern digital products</p>
+                </div>
+                <div class="feature-grid">
+                    <!-- Feature 1 -->
+                    <div class="feature-card fade-in" style="transition-delay: 100ms;">
+                        <h3>License Key Automation</h3>
+                        <p>Automatically generate, deliver, and validate license keys for your software. Manage activations, revocations, and usage seamlessly through our dashboard or API.</p>
+                    </div>
+                    <!-- Feature 2 -->
+                    <div class="feature-card fade-in" style="transition-delay: 200ms;">
+                        <h3 class="secondary">AI-Powered Insights</h3>
+                        <p>Go beyond simple analytics. Our AI analyzes your community platforms (like Discord & Reddit) to reveal user sentiment, engagement patterns, and growth opportunities.</p>
+                    </div>
+                    <!-- Feature 3 -->
+                    <div class="feature-card fade-in" style="transition-delay: 300ms;">
+                        <h3>Effortless Integration</h3>
+                        <p>Connect with the tools you already use. With support for Stripe, Discord, Reddit, and more, Hyperaze fits directly into your existing workflow without friction.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Intersection Observer for scroll animations ---
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, {
+                threshold: 0.1
+            });
+
+            const targets = document.querySelectorAll('.fade-in');
+            targets.forEach(target => {
+                observer.observe(target);
+            });
+
+            // --- Three.js Background Animation ---
+            const canvas = document.querySelector('canvas.webgl');
+            const scene = new THREE.Scene();
+
+            // Particles
+            const particlesGeometry = new THREE.BufferGeometry();
+            const particlesCount = 7000;
+            const posArray = new Float32Array(particlesCount * 3);
+
+            for (let i = 0; i < particlesCount * 3; i++) {
+                posArray[i] = (Math.random() - 0.5) * 10;
+            }
+
+            particlesGeometry.setAttribute('position', new THREE.BufferAttribute(posArray, 3));
+
+            const particlesMaterial = new THREE.PointsMaterial({
+                size: 0.005,
+                color: '#A78BFA' // Softer Violet
+            });
+            const particlesMesh = new THREE.Points(particlesGeometry, particlesMaterial);
+            scene.add(particlesMesh);
+
+            // Sizes
+            const sizes = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+
+            // Camera
+            const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100);
+            camera.position.z = 2;
+            scene.add(camera);
+
+            // Renderer
+            const renderer = new THREE.WebGLRenderer({
+                canvas: canvas,
+                alpha: true // Transparent background
+            });
+            renderer.setSize(sizes.width, sizes.height);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+
+            // Mouse interaction
+            const mouse = new THREE.Vector2();
+            window.addEventListener('mousemove', (event) => {
+                mouse.x = (event.clientX / sizes.width) * 2 - 1;
+                mouse.y = -(event.clientY / sizes.height) * 2 + 1;
+            });
+
+            // Handle window resize
+            window.addEventListener('resize', () => {
+                sizes.width = window.innerWidth;
+                height: window.innerHeight;
+                camera.aspect = sizes.width / sizes.height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(sizes.width, sizes.height);
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            });
+            
+            // Animation Loop
+            const clock = new THREE.Clock();
+            const tick = () => {
+                const elapsedTime = clock.getElapsedTime();
+                
+                // Animate particles
+                particlesMesh.rotation.y = elapsedTime * 0.05;
+
+                // Animate camera based on mouse
+                camera.position.x += (mouse.x * 0.5 - camera.position.x) * 0.02;
+                camera.position.y += (-mouse.y * 0.5 - camera.position.y) * 0.02;
+                camera.lookAt(scene.position);
+
+                renderer.render(scene, camera);
+                window.requestAnimationFrame(tick);
+            };
+
+            tick();
+        });
+    </script>
+
+</body>
+</html>
